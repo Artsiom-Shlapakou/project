@@ -17,6 +17,6 @@ app.conf.beat_schedule = {
     },
     'run-every-three-hour': {
         'task': 'providers.tasks.increase_debt',
-        'schedule': crontab(hour='*/3'),
+        'schedule': crontab(minute=0, hour='*/3'),
     },
 }
