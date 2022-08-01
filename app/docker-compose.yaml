@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: pg_db
+    image: postgres:13-alpine
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=django_db
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./config/.env
+    networks:
+      - web-network
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    env_file:
+      - ./config/.env
+    depends_on:
+      - db
+    networks:
+      - web-network
+
+  web:
+    container_name: web_api
+    build: .
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - db
+    networks:
+      - web-network
+  
+  celery-worker:
+    container_name: celery-worker
+    build: .
+    restart: unless-stopped
+    command: celery -A config worker --loglevel=info --logfile=logs/celery.log
+    volumes:
+      - .:/app
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - web
+      - redis
+    networks:
+      - web-network
+
+  celery-beat:
+    container_name: celery-beat
+    build: .
+    restart: unless-stopped
+    command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes: 
+      - .:/app
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - web
+      - celery-worker
+      - redis
+    networks:
+      - web-network
+  
+  redis:
+    container_name: redis
+    image: redis:6-alpine
+    networks:
+      - web-network
+  
+  # dashboard-flower:
+  #   container_name: dashboard-flower
+  #   build: .
+  #   command: flower -A app
+  #   ports:
+  #     - 5556:5555
+  #   environment:
+  #     - CELERY_BROKER_URL=redis://redis:6379/0
+  #     - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   depends_on:
+  #     - web
+  #     - redis
+  #     - celery-worker
+
+volumes:
+  postgres_data:
+
+networks:
+  web-network:
+    driver: bridge
