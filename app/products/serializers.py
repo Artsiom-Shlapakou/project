@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
+from providers.models import Provider
 from products.models import Product
-from providers.serializers import ProviderSerializer
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    provider = ProviderSerializer()
+    providers = serializers.PrimaryKeyRelatedField(many=True, queryset=Provider.objects.all())
     
     class Meta:
         model = Product
@@ -13,5 +13,5 @@ class ProductSerializer(serializers.ModelSerializer):
             'name',
             'model',
             'release_date',
-            'provider'
+            'providers'
         )
