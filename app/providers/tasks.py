@@ -17,4 +17,5 @@ def reduce_debt():
 @app.task
 def increase_debt():
     increasion_value = random.randint(5, 500)
-    Provider.objects.update(debt=F('debt') + increasion_value)
+    # This condition is True for objects exlude Factory because Factoty cannot have a debt
+    Provider.objects.filter(provider__isnull=False).update(debt=F('debt') + increasion_value)
