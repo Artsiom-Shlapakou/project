@@ -9,12 +9,13 @@ from providers.models import (
     Address,
 )
 
+
 @admin.register(Provider)
 class ProviderAdmin(admin.ModelAdmin):
     list_display = ('name', 'type_provider', 'contacts', 'debt', 'provider_link')
     actions = ['liquidate_supplier_debt']
     readonly_fields = ('provider_link',)
-    # list_filter = ('city',)
+    list_filter = ('contacts__address__city',)
     
     def provider_link(self, obj):
         if provider := obj.provider:
@@ -26,7 +27,12 @@ class ProviderAdmin(admin.ModelAdmin):
 
     @admin.action(description='Liquidation of debt to the provider')
     def liquidate_supplier_debt(self, request, queryset):
-        queryset.update(debt=0)
+        updated = queryset.update(debt=0)
+        self.message_user(request, ngettext(
+            '%d debt was successfully reduced to zero.',
+            '%d debts were successfully reduced to zero.',
+            updated,
+        ) % updated, messages.SUCCESS)
 
 
 @admin.register(Contacts)
