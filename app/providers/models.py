@@ -33,7 +33,7 @@ class Contacts(models.Model):
     address = models.OneToOneField(to=Address, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return self.email
+        return f'{self.email}, {self.address}'
 
     class Meta():
         verbose_name = 'Contacts'
@@ -61,4 +61,4 @@ class Provider(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f'{self.name}, {self.type_provider}'
+        return f'{self.name}'

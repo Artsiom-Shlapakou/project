@@ -1,6 +1,6 @@
-from providers.models import Address, Contacts, Provider
 from rest_framework import serializers
 
+from providers.models import Address, Contacts, Provider
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
