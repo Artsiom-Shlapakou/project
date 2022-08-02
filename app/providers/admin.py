@@ -19,7 +19,7 @@ class ProviderAdmin(admin.ModelAdmin):
     
     def provider_link(self, obj):
         if provider := obj.provider:
-            link=reverse("admin:providers_provider_change", args=[obj.provider])
+            link=reverse("admin:providers_provider_change", args=[obj.provider.id])
             return mark_safe(f'<a href="{link}">{provider}</a>')
     
     provider_link.allow_tags=True
