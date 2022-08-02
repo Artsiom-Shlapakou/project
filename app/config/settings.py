@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_api_key',
     'django_celery_beat',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -141,7 +142,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
-REDIS_PORT =  os.getenv('REDIS_PORT', '6379')
+REDIS_PORT = os.getenv('REDIS_PORT', '6379')
 
 CELERY_BROKER_URL = os.getenv('BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
@@ -150,3 +151,7 @@ CELERY_ACCEPT_CONTENT = [os.getenv('CELERY_ACCEPT_CONTENT')]
 CELERY_RESULT_SERIALIZER = os.getenv('CELERY_RESULT_SERIALIZER')
 CELERY_TIMEZONE = os.getenv('CELERY_TIMEZONE', 'UTC')
 CELERY_ENABLE_UTC = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}

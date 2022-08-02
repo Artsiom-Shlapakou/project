@@ -13,20 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from xml.etree.ElementInclude import include
 from django.contrib import admin
 from django.urls import path, include
 
 apipatterns = [
     path('', include('providers.urls')),
-    # path('', include('products.urls')),
-    # path('', include('employees.urls'))
+    path('', include('products.urls')),
 ]
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('auth/', include('djoser.urls')),
-    # path('auth/', include('djoser.urls.jwt')),
     path('api/', include((apipatterns, 'api'), namespace='api'))
 ]
