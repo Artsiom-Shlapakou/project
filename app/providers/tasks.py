@@ -34,7 +34,7 @@ def send_qr_code_to_email(self, id):
     qr_code = make_qr_code(tmp_contacts)
     msg = EmailMultiAlternatives(
         subject=f'QR-code with {provider.name} contacts',
-        to=['xpressmusik8@gmail.com']
+        to=request ["email"]
     )
 
     image = convertPillToPng(qr_code)

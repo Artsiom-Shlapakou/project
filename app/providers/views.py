@@ -33,8 +33,8 @@ class ProviderViewSet(ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-@api_view()
+@api_view(['POST'])
 def send_mail_api(request, id):
-    send_qr_code_to_email.delay(id)
+    send_qr_code_to_email.delay(request.data, id)
 
     return HttpResponse('Sent QR code to email')
