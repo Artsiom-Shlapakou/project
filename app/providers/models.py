@@ -17,11 +17,7 @@ class Address(models.Model):
     house_number = models.PositiveSmallIntegerField()
 
     def __str__(self) -> str:
-        return f'\
-        {self.country}, \
-        {self.city}, \
-        {self.street}, \
-        {self.house_number}'
+        return f'{self.country}, {self.city}, {self.street}, {self.house_number}'
 
     class Meta():
         verbose_name = 'Address'
