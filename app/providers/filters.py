@@ -8,8 +8,18 @@ class NumberInFilter(filters.BaseInFilter, filters.NumberFilter):
 
 
 class ProviderFilterSet(filters.FilterSet):
-    product = NumberInFilter(field_name='product', method='filter_by_product')
-    country = filters.CharFilter(field_name='country', method='filter_by_country')
+    product = NumberInFilter(
+        field_name='product',
+        lookup_expr='icontains',
+        label="Product",
+        method='filter_by_product'
+    )
+    country = filters.CharFilter(
+        field_name='country',
+        lookup_expr='icontains',
+        label="Country",
+        method='filter_by_country'
+    )
 
     def filter_by_country(self, queryset, name, value):
         return queryset.filter(contacts__address__country=value)
