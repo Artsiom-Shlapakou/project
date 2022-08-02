@@ -1,6 +1,7 @@
 from providers.models import Address, Contacts, Provider
 from rest_framework import serializers
 
+
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
@@ -25,6 +26,7 @@ class ContactsSerializer(serializers.ModelSerializer):
 
 class ProviderSerializer(serializers.ModelSerializer):
     contacts = ContactsSerializer()
+    debt = serializers.SerializerMethodField()
 
     class Meta:
         model = Provider
@@ -36,3 +38,6 @@ class ProviderSerializer(serializers.ModelSerializer):
             'debt',
             'created'
         )
+    
+    def get_debt(self, obj):
+        return obj.debt
