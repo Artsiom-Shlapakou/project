@@ -23,7 +23,7 @@ def increase_debt():
 
 
 @shared_task(bind=True)
-def send_qr_code_to_email(self, id):
+def send_qr_code_to_email(self, request, id):
     """
     Send The QR code to the employee's email
     """
@@ -34,7 +34,7 @@ def send_qr_code_to_email(self, id):
     qr_code = make_qr_code(tmp_contacts)
     msg = EmailMultiAlternatives(
         subject=f'QR-code with {provider.name} contacts',
-        to=request ["email"]
+        to=request.data["email"]
     )
 
     image = convertPillToPng(qr_code)
